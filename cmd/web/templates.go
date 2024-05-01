@@ -3,6 +3,7 @@ package main
 import (
 	"html/template"
 	"path/filepath"
+	"time"
 
 	"github.com/Childebrand94/snippetbox/internal/models"
 )
@@ -12,8 +13,9 @@ import (
 // At the moment it only contains one field, but we'll add more
 // to it as the build progresses.
 type templateData struct {
-	Snippet  models.Snippet
-	Snippets []models.Snippet
+	CurrentYear int
+	Snippet     models.Snippet
+	Snippets    []models.Snippet
 }
 
 func newTemplateChache() (map[string]*template.Template, error) {
@@ -48,4 +50,8 @@ func newTemplateChache() (map[string]*template.Template, error) {
 	}
 	return cache, nil
 
+}
+
+func humanDate(t time.Time) string {
+	return t.Format("02 Jan 2006 at 15:04")
 }
