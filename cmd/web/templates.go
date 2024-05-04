@@ -8,14 +8,18 @@ import (
 	"github.com/Childebrand94/snippetbox/internal/models"
 )
 
-// Define a templateData type to act as the holding structure for
-// any dynamic data that we want to pass to our HTML templates.
-// At the moment it only contains one field, but we'll add more
-// to it as the build progresses.
 type templateData struct {
 	CurrentYear int
 	Snippet     models.Snippet
 	Snippets    []models.Snippet
+}
+
+func humanDate(t time.Time) string {
+	return t.Format("02 Jan 2006 at 15:04")
+}
+
+var function = template.FuncMap{
+	"humanDate": humanDate,
 }
 
 func newTemplateChache() (map[string]*template.Template, error) {
@@ -30,7 +34,7 @@ func newTemplateChache() (map[string]*template.Template, error) {
 	for _, page := range pages {
 		name := filepath.Base(page)
 
-		ts, err := template.ParseFiles("./ui/html/base.tmpl.html")
+		ts, err := template.New(name).Funcs(function).ParseFiles("./ui/html/base.tmpl.html")
 		if err != nil {
 			return nil, err
 		}
@@ -50,8 +54,4 @@ func newTemplateChache() (map[string]*template.Template, error) {
 	}
 	return cache, nil
 
-}
-
-func humanDate(t time.Time) string {
-	return t.Format("02 Jan 2006 at 15:04")
 }
